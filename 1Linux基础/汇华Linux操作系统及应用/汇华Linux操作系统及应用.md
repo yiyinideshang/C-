@@ -253,6 +253,17 @@ zhanghaoboo@zhanghaoboo-virtual-machine:~$
 | `sudo -s`     | 留在原地     | **混杂环境**（保留原用户 PATH） | 临时执行一条 root 命令，又想方便调用原目录下的文件时 |
 | `sudo su`     | 留在原地     | **混杂环境**                    | 不推荐，容易因 PATH 不对导致 `command not found`     |
 
+# 将一个用户添加到一个组中
+
+```bash
+id li # id 用户名 查看指定对象的归属组
+uid=1001(li) gid=1001(li) groups=1001(li)
+#将用户 li 加入 hh 组，成为该组的附加组成员。
+sudo gpasswd -a li hh
+id li
+uid=1001(li) gid=1001(li) groups=1001(li),1000(hh)
+```
+
 # 普通用户添加到root权限组
 
 ```bash
@@ -290,7 +301,7 @@ id 用户名 # 查看指定对象的归属组
 groups #当前登录用户自己的归属组
 ```
 
-- `gid`：基本组
+- `gid`：**基本组**(自己是自己的基本组)
 
 - `groups`:组、群组
 
@@ -313,7 +324,9 @@ zhanghaoboo@zhanghaoboo-virtual-machine:user1 is not in the sudoers file.  This 
 
 # 文件权限
 
-在 Linux 中，文件权限通常分为三组：**拥有者 (User)**、**所属组 (Group)**、**其他用户 (Other)**，每组权限由 **r(读)**、**w(写)**、**x(执行)** 三个标志组成。
+**只有当前用户 有执行权限`x`才能进入该目录**
+
+在 Linux 中，文件权限通常分为三组：（文件所有者（Owner））**拥有者 (User)**、**所属组 (Group)**、**其他用户 (Other)**，每组权限由 **r(读)**、**w(写)**、**x(执行)** 三个标志组成。
 
 如:`rw- rw- r-- `   这种权限组合的八进制表示为 **664**
 
