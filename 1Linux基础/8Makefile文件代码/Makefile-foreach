@@ -1,0 +1,5 @@
+SOURCES += $(wildcard *.cpp)
+OBJECTS += $(foreach filename,$(SOURCES),$(filename:.cpp=.o))
+
+run:$(OBJECTS)
+	@echo $^

@@ -1,0 +1,12 @@
+VALUE1:="就地赋值" #创建变量` VALUE `并 就地赋值 为` 10`#就地赋值VALUE1
+VALUE2=$(VALUE3) #引用了变量 `VALUE3` 的值#递归赋值VALUE2
+VALUE3:="就地赋值"#就地赋值VALUE3
+VALUE3+="追加赋值"#追加赋值VALUE3
+VALUE4?="条件赋值"#条件赋值VALUE4
+VALUE4?="二次条件赋值"#二次条件赋值VALUE4
+
+OBJECT :
+	@echo "value1 = $(VALUE1)"
+	@echo "value2 = $(VALUE2)"
+	@echo "value3 = $(VALUE3)"
+	@echo "value4 = $(VALUE4)"

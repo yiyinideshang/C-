@@ -1,0 +1,5 @@
+SOURCES += $(wildcard *.cpp)
+OBJECTS += $(patsubst %.cpp,%.o,$(SOURCES))
+
+run:$(OBJECTS)
+	@echo $^
