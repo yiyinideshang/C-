@@ -1,0 +1,3 @@
+/home/yishang/文档/HttpServer/build/CMakeFiles/httpserver.dir
+/home/yishang/文档/HttpServer/build/CMakeFiles/edit_cache.dir
+/home/yishang/文档/HttpServer/build/CMakeFiles/rebuild_cache.dir
