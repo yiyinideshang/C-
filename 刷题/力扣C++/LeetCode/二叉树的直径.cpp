@@ -1,7 +1,8 @@
 #include <iostream>
-#include <vector>
-#include <string>
 #include <queue>
+#include <vector>
+#include <stack>
+#include <algorithm>
 using namespace std;
 
 // 二叉树节点的定义:
@@ -64,33 +65,6 @@ void printPreorder(TreeNode* root){
     printPreorder(root->right);
 }
 
-//层序遍历输出:
-vector<string> levelOrderSerialize(TreeNode* root){
-    vector<string> result;
-    if(!root)   
-        return result;
-    queue<TreeNode*> q;
-    q.push(root);
-    while(!q.empty()){
-        TreeNode* curr = q.front();
-        q.pop();
-        if(curr){
-            // 无论子节点是否为空，都入队，以保持占位
-            result.push_back(to_string(curr->val));
-            q.push(curr->left);
-            q.push(curr->right);
-        }
-        else{
-            result.push_back("null");
-        }
-    }
-    // 去除末尾多余的 "null"，避免序列过长
-    while(!result.empty() && result.back() == "null"){
-        result.pop_back();
-    }
-    return result;
-}
-
 //后序释放
 void deleteTree(TreeNode* root){
     if(!root)
@@ -102,44 +76,32 @@ void deleteTree(TreeNode* root){
 
 class Solution {
 public:
-    TreeNode* invertTree(TreeNode* root) {
-        if(root == nullptr)
-            return nullptr;
-        TreeNode* left = invertTree(root->left);
-        TreeNode* right = invertTree(root->right);
-        root->left = right;
-        root->right = left;
-        return root;
+    int diameterOfBinaryTree(TreeNode* root) {
+        int maxDiameter = 0;//记录最大直径(边数)
+        maxDepth(root,maxDiameter);//后序遍历,过程中更新最大值
+        return maxDiameter;
+    }
+private:
+    int maxDepth(TreeNode* node,int& maxDiamter){
+        if(node == nullptr) return 0;//空节点深度为0
+        int leftDepth = maxDepth(node->left,maxDiamter);//左子树的深度
+        int rightDepth = maxDepth(node->right,maxDiamter);//右子树的深度
+        //如果 经过当前节点的路径长度(边数)leftDepth+rightDepth 大于 标记值,则更新
+        maxDiamter = std::max(maxDiamter,leftDepth+rightDepth); 
+        return std::max(leftDepth,rightDepth) + 1;//返回当前节点的深度(左/右子树中最大的深度+1)
     }
 };
 
-int main()
-{
-    //通过vector构建二叉树
-    //预先将层级序列存入 vector（"null" 表示空节点）
+int main(){
     vector<string> preorder = 
-    // {"4","2","6","1","3","5","7"}; //->`[1, 2, 3, 4, 5, 6, 7]`
-    // {"1","2","3","4","5","null","8","null","null","6","7","9"};
-    // {"1","2","3","null","null","4","5"};
-    {"1","2","3","null","6","4","5"};
-    
+    {"1","2","3","4","5"};
     TreeNode* root = buildTree(preorder);
     cout<<"生成的二叉树先序遍历为:"<<endl;
     printPreorder(root);
     cout<<endl;
 
     Solution s;
-    root = s.invertTree(root);
-    cout<<"翻转后的二叉树的先序遍历为:"<<endl;
-    printPreorder(root);
-    cout<<endl;
-
-    cout<<"翻转后的二叉树的层序遍历为:"<<endl;
-    vector<string> result = levelOrderSerialize(root);
-    for(const string& s: result){
-        std::cout<<s<<" ";
-    }
-
-    deleteTree(root);
-    return 0;   
+    int solut = s.diameterOfBinaryTree(root);
+    std::cout<<solut<<std::endl;
+    return 0;
 }

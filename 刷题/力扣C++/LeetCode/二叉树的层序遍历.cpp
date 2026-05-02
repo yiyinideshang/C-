@@ -1,7 +1,7 @@
 #include <iostream>
-#include <vector>
-#include <string>
 #include <queue>
+#include <vector>
+#include <algorithm>
 using namespace std;
 
 // 二叉树节点的定义:
@@ -102,44 +102,58 @@ void deleteTree(TreeNode* root){
 
 class Solution {
 public:
-    TreeNode* invertTree(TreeNode* root) {
-        if(root == nullptr)
-            return nullptr;
-        TreeNode* left = invertTree(root->left);
-        TreeNode* right = invertTree(root->right);
-        root->left = right;
-        root->right = left;
-        return root;
+    vector<vector<int>> levelOrder(TreeNode* root) {
+        vector<vector<int>> res;
+        queue<TreeNode*> q;
+        if(root) q.push(root);
+    
+        while(!q.empty()){
+            int size = q.size();
+            vector<int> level;
+            for(int i = 0;i<size;++i){
+                TreeNode* curr =q.front();
+                q.pop();
+                level.push_back(curr->val);
+                if(curr->left)q.push(curr->left);
+                if(curr->right)q.push(curr->right);
+            }
+            res.push_back(level);
+        }
+        return res;
     }
 };
 
-int main()
-{
-    //通过vector构建二叉树
-    //预先将层级序列存入 vector（"null" 表示空节点）
+int main(){
     vector<string> preorder = 
-    // {"4","2","6","1","3","5","7"}; //->`[1, 2, 3, 4, 5, 6, 7]`
-    // {"1","2","3","4","5","null","8","null","null","6","7","9"};
-    // {"1","2","3","null","null","4","5"};
-    {"1","2","3","null","6","4","5"};
-    
+    {"1","2","3","4","5"};
     TreeNode* root = buildTree(preorder);
     cout<<"生成的二叉树先序遍历为:"<<endl;
     printPreorder(root);
     cout<<endl;
 
-    Solution s;
-    root = s.invertTree(root);
-    cout<<"翻转后的二叉树的先序遍历为:"<<endl;
-    printPreorder(root);
-    cout<<endl;
-
-    cout<<"翻转后的二叉树的层序遍历为:"<<endl;
+    cout<<"生成的二叉树层序遍历为:"<<endl;
     vector<string> result = levelOrderSerialize(root);
     for(const string& s: result){
         std::cout<<s<<" ";
     }
+    cout<<endl;
 
-    deleteTree(root);
-    return 0;   
+    Solution s;
+    vector<vector<int>> vec = s.levelOrder(root);
+    std::cout<<"[";
+    for(int i = 0;i<vec.size();i++){
+        std::cout<<"[";
+        for(int j = 0;j<vec[i].size();j++){
+            std::cout<<vec[i][j];
+            if(j != vec[i].size()-1){
+                std::cout<<",";
+            }
+        }
+        std::cout<<"]";
+        if(i != vec.size()-1){
+            std::cout<<",";
+        }
+    }
+    std::cout<<"]";
+    return 0;
 }
