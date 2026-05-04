@@ -1,6 +1,7 @@
 #include <iostream>
-#include <queue>
 #include <vector>
+#include <string>
+#include <queue>
 #include <stack>
 #include <algorithm>
 using namespace std;
@@ -54,16 +55,33 @@ TreeNode* buildTree(const vector<string>& preorder){
     return buildPreorder(preorder,index);
 }
 
-void printPreorder(TreeNode* root){
-    if(!root){
-        cout<<"null"<<" ";//可以输出时不加null
-        return ;
+class Solution {
+public:
+    bool isValidBST(TreeNode* root) {
+        stack<TreeNode*> stk;
+        long long prev = LONG_MIN;
+
+        TreeNode* curr = root;
+        while (curr || !stk.empty()) {
+            // 一路向左，将所有左节点入栈
+            while (curr) {
+                stk.push(curr);
+                curr = curr->left;
+            }
+            // 弹出栈顶节点，此时即为中序访问的节点
+            curr = stk.top(); stk.pop();
+
+            // 检查是否严格大于前驱
+            if (curr->val <= prev) 
+                return false;
+            prev = curr->val;
+
+            // 转向右子树
+            curr = curr->right;
+        }
+        return true;
     }
-       
-    cout<<root->val<<" ";
-    printPreorder(root->left);
-    printPreorder(root->right);
-}
+};
 
 //后序释放
 void deleteTree(TreeNode* root){
@@ -74,36 +92,17 @@ void deleteTree(TreeNode* root){
     delete root;
 }
 
-class Solution {
-public:
-    int diameterOfBinaryTree(TreeNode* root) {
-        int maxDiameter = 0;//记录最大直径(边数)
-        maxDepth(root,maxDiameter);//后序遍历,过程中更新最大值
-        return maxDiameter;
-    }
-private:
-    int maxDepth(TreeNode* node,int& maxDiamter){
-        if(node == nullptr) return 0;//空节点深度为0
-        int leftDepth = maxDepth(node->left,maxDiamter);//左子树的深度
-        int rightDepth = maxDepth(node->right,maxDiamter);//右子树的深度
-        //如果 经过当前节点的路径长度(边数)leftDepth+rightDepth 大于 标记值,则更新
-        maxDiamter = std::max(maxDiamter,leftDepth+rightDepth); 
-        return std::max(leftDepth,rightDepth) + 1;//返回当前节点的深度(左/右子树中最大的深度+1)
-    }
-};
-
-int main(){
+int main()
+{
     //通过vector构建二叉树
     //预先将层序遍历序列存入 vector（"null" 表示空节点）
-    vector<string> preorder = 
-    {"1","2","3","4","5"};
+    vector<string> preorder = {"2","1","3"};
     TreeNode* root = buildTree(preorder);
-    cout<<"生成的二叉树先序遍历为:"<<endl;
-    printPreorder(root);
-    cout<<endl;
 
     Solution s;
-    int solut = s.diameterOfBinaryTree(root);
-    std::cout<<solut<<std::endl;
-    return 0;
+    bool flag = s.isValidBST(root);
+    std::cout<<flag<<std::endl;
+
+    deleteTree(root);
+    return 0;   
 }

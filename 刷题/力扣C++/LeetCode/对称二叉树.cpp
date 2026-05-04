@@ -102,6 +102,8 @@ public:
 };
 
 int main(){
+    //通过vector构建二叉树
+    //预先将层序遍历序列存入 vector（"null" 表示空节点）
     vector<string> preorder = 
     {"1","2","2","3","4","4","3"};
     TreeNode* root = buildTree(preorder);
