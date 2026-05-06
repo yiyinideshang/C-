@@ -18,7 +18,7 @@ struct TreeNode
 };
 
 // 根据层序遍历序列构建二叉树（"null" 表示空节点）
-TreeNode* buildPreorder(const vector<string>& nodes,int& index){
+TreeNode* build_levelOrder(const vector<string>& nodes){
     if (nodes.empty() || nodes[0] == "null") return nullptr;
 
     // 创建根节点
@@ -46,12 +46,6 @@ TreeNode* buildPreorder(const vector<string>& nodes,int& index){
         i++;
     }
     return root;
-}
-
-// 便利包装：隐藏 index 引用
-TreeNode* buildTree(const vector<string>& preorder){
-    int index = 0;
-    return buildPreorder(preorder,index);
 }
 
 class Solution {
@@ -92,8 +86,8 @@ int main()
 {
     //通过vector构建二叉树
     //预先将层序遍历序列存入 vector（"null" 表示空节点）
-    vector<string> preorder = {"3","1","4","null","2"};
-    TreeNode* root = buildTree(preorder);
+    vector<string> levelOrder = {"3","1","4","null","2"};
+    TreeNode* root = build_levelOrder(levelOrder);
 
     int k = 2;
     int result = 0;
