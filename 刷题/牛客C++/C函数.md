@@ -224,3 +224,75 @@ D	`struct str_t *pData = (struct str_t*) &str; printf("data:%s%s\n", str.data, (
   - `pData->data` 直接就是 `str.data`，强制转换为 `char*` 后输出自身存储的 `"hello"`，显然正确。
 
 综上，只有选项B不能正确输出 `"hello"`。
+
+# c++中cin与cout 详解
+
+在C++中，**cin**和**cout**是用于输入和输出的标准流对象。它们分别代表标准输入设备（通常是键盘）和标准输出设备（通常是显示器）。与C语言中的*scanf*和*printf*不同，C++提供了更为简洁和灵活的输入输出方式。
+
+## cin的使用
+
+**cin**用于从标准输入读取数据。其基本用法是使用*>>*运算符将输入的数据存储到变量中。例如：
+
+```c++
+#include <iostream>
+using namespace std;
+int main() {
+   int x;
+   cout << "Please input an int number:" << endl;
+   cin >> x;
+   cout << "The int number is x= " << x << endl;
+   return 0;
+}
+```
+
+在这个例子中，程序提示用户输入一个整数，并将输入的整数存储在变量*x*中，然后输出该整数。**cin**还可以连续读取多个变量，使用空格分隔。例如：
+
+```c++
+#include <iostream>
+using namespace std;
+int main() {
+   int x;
+   float y;
+   cout << "Please input an int number and a float number:" << endl;
+   cin >> x >> y;
+   cout << "The int number is x= " << x << endl;
+   cout << "The float number is y= " << y << endl;
+   return 0;
+}
+```
+
+在这个例子中，程序连续读取一个整数和一个浮点数，并分别存储在变量*x*和*y*中。
+
+## cout的使用
+
+**cout**用于向标准输出设备输出数据。其基本用法是使用*<<*运算符将数据输出到显示器。例如：
+
+```c++
+#include <iostream>
+using namespace std;
+int main() {
+   int x = 30, y = 300, z = 1024;
+   cout << x << ' ' << y << ' ' << z << endl; // 按十进制输出
+   return 0;
+}
+```
+
+在这个例子中，程序输出三个整数，默认按十进制格式输出。
+
+**cout**还可以进行格式化输出，例如按不同进制输出、设置宽度和填充字符等。例如：
+
+```c++
+#include <iostream>
+#include <iomanip>
+using namespace std;
+int main() {
+   int x = 30, y = 300, z = 1024;
+   cout << hex << x << ' ' << y << ' ' << z << endl; // 按十六进制输出
+   cout << setfill('.') << setw(10) << x << endl; // 设置宽度和填充字符
+   return 0;
+}
+```
+
+在这个例子中，程序按十六进制格式输出整数，并设置宽度和填充字符。
+
+总之，**cin**和**cout**提供了C++中强大而灵活的输入输出功能，使得编写和阅读代码更加简洁和直观。
