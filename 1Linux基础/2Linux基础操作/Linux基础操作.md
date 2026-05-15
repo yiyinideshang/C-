@@ -140,7 +140,7 @@ sudo /usr/bin/vmhgfs-fuse .host:/ /mnt/hgfs -o subtype=vmhgfsfuse,allow_other
 
 ![微信图片_20250820204946](D:\Typora\typora_work\1Linux基础\2Linux基础操作\微信图片_20250820204946.png)
 
-## -------------------------
+---
 
 # Linux常用操作
 
@@ -330,4 +330,103 @@ set compatible已经被修改成set nocompatible了，说明你的sudo vi /etc/v
 "C:\Program Files (x86)\VMware\VMware Workstation\linux.iso"
 "C:\Program Files (x86)\VMware\VMware Workstation\windows.iso"
 ```
+
+# 📒 初次配置 WARP 完整笔记（Ubuntu Linux 版）
+
+### 1️⃣ 安装
+
+```bash
+# 添加公钥
+curl -fsSL https://pkg.cloudflareclient.com/pubkey.gpg | sudo gpg --dearmor -o /etc/apt/trusted.gpg.d/cloudflare-warp.gpg
+
+# 添加软件源
+echo "deb https://pkg.cloudflareclient.com/ $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/cloudflare-warp.list
+
+# 更新并安装
+sudo apt update
+sudo apt install cloudflare-warp
+```
+
+> **NO_PUBKEY 报错修复：** `sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys <缺失的KEY>`
+
+### 2️⃣ 注册与连接（避开超时/卡死）
+
+关键：**强制使用 TCP 协议**
+
+```bash
+# 注册（新版命令）
+warp-cli registration new --accept-tos
+
+# 🔥最重要的一步：改用 TCP 连接（避免卡在 Connecting）
+warp-cli settings set protocol tcp
+
+# 启动服务并连接
+sudo systemctl restart warp-svc
+warp-cli connect
+```
+
+> **IPC 通信超时修复：**
+>
+> ```bash
+> sudo systemctl stop warp-svc
+> sudo rm -rf /var/lib/warp-svc/
+> sudo systemctl start warp-svc
+> ```
+
+### 3️⃣ 解除 DNS 劫持（⚡钢铁避坑）
+
+WARP 能连上 ≠ 能上 GitHub！必须清理残留的 DNS 劫持：
+
+```bash
+# 清理 hosts
+sudo sed -i '/github.com/d' /etc/hosts
+
+# 配置系统 DNS 为 1.1.1.1
+sudo nano /etc/systemd/resolved.conf
+# → 修改为：DNS=1.1.1.1 1.0.0.1
+
+# 重启解析服务并清缓存
+sudo systemctl restart systemd-resolved
+sudo resolvectl flush-caches # 刷新 DNS
+```
+
+### 4️⃣ Firefox 设置（必看 🔥）
+
+网通但 Firefox 打不开？
+
+- 设置 → 网络设置 → **无代理**
+- 隐私与安全 → **关闭 DNS over HTTPS**
+
+### 5️⃣ 日常使用命令（你要求的 🔁）
+
+```bash
+## 关闭 WARP
+warp-cli disconnect
+
+## 重新开启 WARP
+warp-cli connect
+
+## 刷新 DNS（当连上后解析依然异常时使用）
+sudo resolvectl flush-caches
+```
+
+### 6️⃣ 完全卸载（一劳永逸）
+
+```bash
+warp-cli disconnect
+sudo systemctl stop warp-svc
+sudo systemctl disable warp-svc
+sudo apt remove --purge cloudflare-warp
+# 恢复 resolved.conf 中的 DNS 设置
+sudo systemctl restart systemd-resolved
+```
+
+---
+
+### 💡 核心避坑口诀（背下来）
+
+- **安装卡在公钥？** → 手动添加密钥
+- **连接一直 Connecting？** → TCP 协议 + 重启服务
+- **GitHub 解析成 127.0.0.1？** → 修改 resolved.conf + 重启 DNS
+- **火狐打不开？** → 关闭代理 + 关掉 DoH
 
