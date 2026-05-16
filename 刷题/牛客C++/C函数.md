@@ -296,3 +296,39 @@ int main() {
 在这个例子中，程序按十六进制格式输出整数，并设置宽度和填充字符。
 
 总之，**cin**和**cout**提供了C++中强大而灵活的输入输出功能，使得编写和阅读代码更加简洁和直观。
+
+# cstring/string/string.h
+
+- **`<string>`** ：C++ 的**字符串类**头文件，给你 `std::string`。
+- **`<cstring>`** ：C++ 包装的 **C 风格字符串处理函数**库，给你 `std::memset` 等。
+- **`<string.h>`** ：古老的 C 语言头文件，也是 C 字符串处理函数，但函数在全局名字空间
+
+## 1. `<string>` —— C++ 字符串类
+
+它提供了 `std::string`、`std::wstring` 等类，以及相关的操作（长度、拼接、查找等），和 C 风格的 `char*`、`memset` 没有任何关系。
+
+## 2. `<cstring>` —— C 字符串函数的 C++ 版本
+
+这是 C 标准库 `<string.h>` 的 C++ 版本，把 `memset`、`memcpy`、`strlen` 等函数放到 **`std` 命名空间**里：
+
+```c++
+#include <cstring>
+std::memset(next, 0, sizeof(next));  // 推荐写法
+```
+
+标准规定，`<cstring>` 也可能让这些名字在全局空间也可见（例如直接用 `memset`），但这属于编译器的自由。为了规范，建议用 `std::memset`。
+
+## 3. `<string.h>` —— 原始的 C 头文件
+
+这是古老的 C 语言头文件，里面所有的函数（`memset`、`strcpy` 等）**直接放在全局命名空间**：
+
+```c++
+#include <string.h>
+memset(next, 0, sizeof(next));  // 直接使用，没有 std::
+```
+
+| 头文件       | 提供什么                                  | 命名空间              | 典型用法                                  |
+| :----------- | :---------------------------------------- | :-------------------- | :---------------------------------------- |
+| `<string>`   | `std::string` 类                          | `std`                 | `std::string s;`                          |
+| `<cstring>`  | C 字符串处理函数（`memset`、`strlen` 等） | `std`（也可能有全局） | `std::memset(p, 0, n);`                   |
+| `<string.h>` | 同上（C 原始版）                          | 全局                  | `memset(p, 0, n);`（不推荐 C++ 中直接用） |
