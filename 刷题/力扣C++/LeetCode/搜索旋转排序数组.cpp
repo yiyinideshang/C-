@@ -6,26 +6,34 @@ using namespace std;
 
 class Solution {
 public:
-    int search(vector<int>& nums, int target) {
-        int left = 0, right = nums.size() - 1;
-        while (left <= right) {
-            int mid = left + (right - left) / 2;
-            if (nums[mid] == target) return mid;
-
-            // 左半部分有序
-            if (nums[left] <= nums[mid]) {
-                if (nums[left] <= target && target < nums[mid]) {
-                    right = mid - 1;   // target 在左半部分
-                } else {
-                    left = mid + 1;    // target 在右半部分
+    int search(vector<int>& nums, int tar{        int left = 0;
+        int right = nums.size()-1;
+        while(left<=right){
+            int mid = left + (right-left)/2;
+            if(nums[mid]==target)   return mid;
+            if(nums[left]<=nums[mid]){
+                //nums[left]=nums[mid];
+                if(nums[mid]>target&&nums[left]<=target){
+                    //nums[left<=target]
+                    right = mid-1;//4 5 6 7 0 1 2 mid=7,target=5;
                 }
-            } 
-            // 右半部分有序
-            else {
-                if (nums[mid] < target && target <= nums[right]) {
-                    left = mid + 1;    // target 在右半部分
-                } else {
-                    right = mid - 1;   // target 在左半部分
+                else if(nums[mid]>target&&nums[left]>target){
+                    left = mid + 1;//4 5 6 7 0 1 2 mid=7,target=0;
+                }
+                else if(nums[mid]<target){
+                    left = mid + 1;//4 5 6 7 8 1 2 mid=7,target=8;
+                }
+            }
+            else if(nums[mid]<nums[right]){
+                if(nums[mid]<target&&nums[right]>=target){
+                    //nums[right]=target;
+                    left = mid + 1;//4 5 6 0 1 2 3 mid=0,target=2
+                }
+                else if(nums[mid]<target&&nums[right]<target){
+                    right = mid -1;//4 5 6 0 1 2 3 mid=0,target=4
+                }
+                else if(nums[mid]>target){
+                    right = mid -1;//9 0 1 2 3 4 7 mid=2,target=0
                 }
             }
         }
@@ -35,7 +43,7 @@ public:
 
 int main(){
     vector<int> nums = {4,5,6,7,0,1,2};
-    int target = 5;
+    int target = 0;
     Solution s;
     std::cout<<s.search(nums,target)<<std::endl;
     return 0;
